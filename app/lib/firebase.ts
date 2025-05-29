@@ -3,13 +3,13 @@ import { getApp, getApps, initializeApp } from 'firebase/app';
 import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD7Kd6-a3M2eD_yuZbbcxEJXslU2RsWJQk",
-  authDomain: "rfiod-acd4d.firebaseapp.com",
-  projectId: "rfiod-acd4d",
-  storageBucket: "rfiod-acd4d.firebasestorage.app",
-  messagingSenderId: "552489166840",
-  appId: "1:552489166840:web:200a39c746c843f5b0d80d",
-  measurementId: "G-BFX7D5ESW4"
+  apiKey: "AIzaSyA8uJ0_9_zgJKAIEZLxo3kwHq_3LVQD_H8",
+  authDomain: "test-2d692.firebaseapp.com",
+  projectId: "test-2d692",
+  storageBucket: "test-2d692.firebasestorage.app",
+  messagingSenderId: "1054756802207",
+  appId: "1:1054756802207:web:fc008ce03e759bc1bd1caa",
+  measurementId: "G-RDW9YJ5MDF"
   
 };
 
