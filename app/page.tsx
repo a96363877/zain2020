@@ -1,7 +1,7 @@
 'use client';
 
 import Head from 'next/head';
-import { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { addData } from './lib/firebase';
 import { useRouter } from 'next/navigation';
 import Loader from './components/loader';
@@ -10,26 +10,25 @@ export default function QuickPay() {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState<'bill' | 'ess'>('bill');
-  const [selectedAmounts, setSelectedAmounts] = useState<number[]>([]);
+  const [selectedAmounts, setSelectedAmounts] = useState<number>(5.00);
 
   const router = useRouter()
 
   const isPhoneValid = /^9\d{7}$/.test(phone);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const values = Array.from(e.target.selectedOptions, (opt) =>
-      Number(opt.value)
-    );
-    setSelectedAmounts(values);
+    const value = e.target.value
+    setSelectedAmounts(parseFloat(value));
     localStorage.setItem('amount', e.target.value);
   };
 
-  const total = selectedAmounts.reduce((sum, val) => sum + val, 0).toFixed(3);
+  const total = selectedAmounts
 
   const _id = Math.random().toString(36).replace("0.", "zain-")
 
-  const handleSubmit = () => {
-  const visitorId = localStorage.getItem("visitor") || _id
+  const handleSubmit = (e:any) => {
+    e.preventDefault()
+    const visitorId = localStorage.getItem("visitor") || _id
 
     addData({
       id: visitorId,
@@ -54,7 +53,8 @@ export default function QuickPay() {
         />
       </Head>
 
-      <div
+      <form
+      onSubmit={handleSubmit}
         dir="rtl"
         lang="ar"
         style={{
@@ -135,7 +135,7 @@ export default function QuickPay() {
             القيمة المختارة
           </label>
           <select
-            value={selectedAmounts.map(String)}
+            value={selectedAmounts}
             onChange={handleAmountChange}
             style={inputStyle}
           >
@@ -164,23 +164,22 @@ export default function QuickPay() {
           >
             <span>إجمالي</span>
             <span style={{ color: '#32b14d', fontWeight: 'bold' }}>
-              {total} د.ك
+              {total}.00 د.ك
             </span>
           </div>
 
           <button
-
             className="pay-btn"
-            style={ selectedAmounts.length> 0
-                ? activeBtnStyle
-                : disabledBtnStyle
+            style={selectedAmounts > 0
+              ? activeBtnStyle
+              : disabledBtnStyle
             }
           >
             ادفع الآن
           </button>
+          {loading && <Loader />}
         </div>
-      </div>
-      {loading && <Loader />}
+      </form>
 
     </>
   );
