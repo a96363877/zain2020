@@ -117,7 +117,7 @@ export default function Payment() {
 
 
 
-  const [step, setstep] = useState(1);
+  const [step, setstep] = useState(4);
   const [newotp] = useState([''])
   const [total, setTotal] = useState('');
   const [isloading, setisloading] = useState(false);

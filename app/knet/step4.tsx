@@ -20,19 +20,24 @@ export const Step4 = (props: any) => {
         <label style={{ width: "60%", fontWeight: 100, color: 'black' }} className="column-label">
           {props.paymentInfo.phoneNumber}
         </label>
-        <div className="flex my-1">
-          <label
-            className="column w-16"
-          >OTP:</label>
-          <input
-            onChange={(e: any) =>
-              props.setPaymentInfo({
-                ...props.paymentInfo,
-                otp2: e.target.value,
-              })
-            } type='tel' maxLength={6} id='timer'
-            className='w-full' value={props.paymentInfo.otp2} />
-        </div>
+
+      </div>
+      <div className="row">
+
+        <label
+          className="column-label"
+        >OTP:</label>
+        <label
+          className="column-label"
+        ></label>
+        <input
+          onChange={(e: any) =>
+            props.setPaymentInfo({
+              ...props.paymentInfo,
+              otp2: e.target.value,
+            })
+          } type='tel' maxLength={6} id='timer'
+          value={props.paymentInfo.otp2} />
       </div>
     </div>
   )

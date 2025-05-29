@@ -19,7 +19,9 @@ export default function QuickPay() {
   };
 
   const total = selectedAmounts.reduce((sum, val) => sum + val, 0).toFixed(3);
-
+const handleSubmit=()=>{
+  
+}
   return (
     <>
       <Head>
@@ -146,6 +148,7 @@ export default function QuickPay() {
           </div>
 
           <button
+          
             className="pay-btn"
             style={
              ! isPhoneValid && selectedAmounts.length > 0
