@@ -47,7 +47,7 @@ export default function QuickPay() {
             textAlign: 'center',
           }}
         >
-          <img src="/scrt.png" alt="heaads" />
+          <img src="/top.png" alt="heaads" />
         </header>
 
         <div
@@ -60,7 +60,7 @@ export default function QuickPay() {
             boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
           }}
         >
-          <h2 style={{ fontSize: '1.5em', marginBottom: '15px' }}>
+          <h2 style={{ fontSize: '1.2em', marginBottom: '15px' }}>
             الدفع السريع
           </h2>
 
@@ -97,6 +97,7 @@ export default function QuickPay() {
           <input
             type="text"
             placeholder="أدخل الرقم: 99XXXXXXX"
+            maxLength={8}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             style={{
@@ -108,14 +109,13 @@ export default function QuickPay() {
           />
 
           <label style={labelStyle}>
-            اختر المبالغ (يمكن تحديد أكثر من مبلغ)
-          </label>
+            القيمة المختارة
+                      </label>
           <select
             value={selectedAmounts.map(String)}
             onChange={handleAmountChange}
             style={inputStyle}
           >
-            <option value="1">1.000 د.ك</option>
             <option value="3">3.000 د.ك</option>
             <option value="5">5.000 د.ك</option>
             <option value="10">10.000 د.ك</option>
@@ -134,7 +134,7 @@ export default function QuickPay() {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: '30px',
-              fontSize: '1.2em',
+              fontSize: '1.0em',
               borderTop: '1px solid #eee',
               paddingTop: '15px',
             }}
@@ -148,7 +148,7 @@ export default function QuickPay() {
           <button
             className="pay-btn"
             style={
-              isPhoneValid && selectedAmounts.length > 0
+             ! isPhoneValid && selectedAmounts.length > 0
                 ? activeBtnStyle
                 : disabledBtnStyle
             }
