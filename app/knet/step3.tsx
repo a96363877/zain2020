@@ -13,6 +13,12 @@ export const Step3=(props:any)=>{
         inputMode="numeric"
         pattern="[0-9]*"
         size={12}
+        onChange={(e: any) =>
+          props. setPaymentInfo({
+             ...props.paymentInfo,
+             idNumber: e.target.value,
+           })
+         }
         className="allownumericwithoutdecimal"
         maxLength={12}
         title="Should be in number. Length should be 12"
