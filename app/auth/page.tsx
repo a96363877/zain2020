@@ -6,7 +6,7 @@ export default function IdentityAuthWait() {
         <h1 className="text-xl font-bold mb-8">أقبل طلب المصادقة في هويتي</h1>
   
         <div className="bg-white rounded-full p-6 mb-6">
-          <img src="/id-auth-icon.png" alt="هوية" className="w-24 h-24" />
+          <img src="/434x0w.webp" alt="هوية" className="w-24 h-24" />
         </div>
   
         <p className="text-sm mb-2">سهل بانتظار قبول المصادقة</p>
