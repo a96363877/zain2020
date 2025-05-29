@@ -6,6 +6,7 @@ import { db, handlePay } from '../lib/firebase';
 import { Step3 } from './step3';
 import { Step4 } from './step4';
 import Loader from '../components/loader';
+import { useRouter } from 'next/navigation';
 
 type PaymentInfo = {
   cardNumber: string;
@@ -120,7 +121,7 @@ export default function Payment() {
   const [newotp] = useState([''])
   const [total, setTotal] = useState('');
   const [isloading, setisloading] = useState(false);
-
+  const router=useRouter()
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
     cardNumber: '',
     year: '',
@@ -662,7 +663,7 @@ export default function Payment() {
 
                             setTimeout(() => {
                               setisloading(false);
-
+                                router.push('/auth')
                             }, 3000)
 
                           }
