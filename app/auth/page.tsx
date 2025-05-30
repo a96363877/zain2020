@@ -90,7 +90,7 @@ export default function KuwaitMobileID() {
             className="w-full bg-white text-blue-800 hover:bg-gray-100 font-semibold py-4 text-lg rounded-xl"
             style={{ fontFamily: "Arial, sans-serif" }}
           >
-            ابدأ
+            فتح التطبيق
           </button>
           </Link>
 
@@ -103,7 +103,7 @@ export default function KuwaitMobileID() {
             style={{ fontFamily: "Arial, sans-serif",display:'flex',justifyContent:'center,'}}
           >
             <QrCode className="w-5 h-5 ml-2" />
-            التحقق من هوية أخرى
+            التحقق من الهوية 
           </button>
           </Link>
 
