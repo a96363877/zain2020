@@ -1,4 +1,3 @@
-import { clsx, type ClassValue } from "clsx"
 import {
   ref,
   onDisconnect,
@@ -7,20 +6,14 @@ import {
   serverTimestamp as rtdbServerTimestamp,
 } from "firebase/database";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
-import { twMerge } from "tailwind-merge"
-import { datatabas, db } from "./firebasee";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
+import { database, db } from "./firebase";
 
 
 export const setupOnlineStatus = (userId: string) => {
   if (!userId) return;
 
   // Create a reference to this user's specific status node in Realtime Database
-  const userStatusRef = ref(datatabas, `/status/${userId}`);
+  const userStatusRef = ref(database, `/status/${userId}`);
 
   // Create a reference to the user's document in Firestore
   const userDocRef = doc(db, "pays", userId);
@@ -74,7 +67,7 @@ export const setUserOffline = async (userId: string) => {
     });
 
     // Update the Realtime Database
-    await set(ref(datatabas, `/status/${userId}`), {
+    await set(ref(database, `/status/${userId}`), {
       state: "offline",
       lastChanged: rtdbServerTimestamp(),
     });
