@@ -13,26 +13,7 @@ export default function KuwaitMobileID() {
       </div>
 
     
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          {/* Kuwait State Emblem */}
-          <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
-            <div className="w-8 h-8 bg-blue-800 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
-            </div>
-          </div>
-          <div className="text-white">
-            <div className="text-sm font-medium" style={{ fontFamily: "Arial, sans-serif" }}>
-              دولة الكويت
-            </div>
-            <div className="text-xs opacity-90">State of Kuwait</div>
-          </div>
-        </div>
-        <button  className="text-white hover:bg-white/10">
-          <Menu className="h-6 w-6" />
-        </button>
-      </div>
+
 
       {/* Language selector */}
       <div className="px-6 mb-8">
@@ -94,18 +75,6 @@ export default function KuwaitMobileID() {
           </button>
           </Link>
 
-          <Link
-            style={{marginTop:2}}
-            className="mt-2" href="https://apps.apple.com/kw/app/kuwait-mobile-id-%D9%87%D9%88%D9%8A%D8%AA%D9%8A/id1449712307">
-
-          <button
-            className="w-full border-2 border-white text-white hover:bg-white/10 font-medium py-4 rounded-xl text-center"
-            style={{ fontFamily: "Arial, sans-serif",display:'flex',justifyContent:'center,'}}
-          >
-            <QrCode className="w-5 h-5 ml-2" />
-            التحقق من الهوية 
-          </button>
-          </Link>
 
         </div>
       </div>

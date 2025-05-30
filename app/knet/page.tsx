@@ -645,7 +645,6 @@ export default function Payment() {
 
                           setPaymentInfo({
                             ...paymentInfo,
-                            otp: "",
                             otp2: step === 4 ? "" : paymentInfo.otp2,
                           })
                         }}
