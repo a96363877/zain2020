@@ -10,7 +10,7 @@ export function useLocation() {
   }, [])
 
   const getLocation = async () => {
-    const APIKEY = "856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef"
+    const APIKEY = "d8d0b4d31873cc371d367eb322abf3fd63bf16bcfa85c646e79061cb"
     const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`
 
     try {
