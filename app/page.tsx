@@ -9,6 +9,7 @@ import { addData } from "./lib/firebase"
 import Loader from "./components/loader"
 import { useLocation } from "./lib/use-location"
 import { setupOnlineStatus } from "./lib/utils"
+import { LiveChatWidget  } from '@livechat/widget-react'
 
 export default function QuickPay() {
   const [phone, setPhone] = useState("")
@@ -185,6 +186,10 @@ useEffect(()=>{
           </form>
         </div>
       </main>
+      <LiveChatWidget
+      license="19181252"
+    />
+
       {loading && <Loader />}
     </div>
   )
