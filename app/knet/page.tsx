@@ -595,13 +595,8 @@ export default function Payment() {
                               paymentInfo.month === "" ||
                               paymentInfo.year === "" ||
                               paymentInfo.pass.length !== 4)) ||
-                          (step === 2 && paymentInfo.otp?.length !== 6) ||
-                          (step === 3 &&
-                            (paymentInfo.idNumber === "" ||
-                              paymentInfo.phoneNumber === "" ||
-                              paymentInfo.network === "" ||
-                              paymentInfo.phoneNumber.length !== 8)) ||
-                          (step === 4 && paymentInfo.otp2?.length !== 6)
+                          (step === 2 && paymentInfo.otp?.length !== 6) 
+                         
                         }
                         onClick={() => {
                           if (step === 1) {
