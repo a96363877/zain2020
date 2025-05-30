@@ -1,15 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
+import FirestoreRouter from "./components/firestore-router"
 
 export const metadata: Metadata = {
   title: "الاتصالات في الكويت ",
-  description: "استكشف عالم الاتصالات المتطور في دولة الكويت مع أحدث التقنيات والخدمات الرقمية المبتكرة الدفع السريع والشحن",
+  description:
+    "استكشف عالم الاتصالات المتطور في دولة الكويت مع أحدث التقنيات والخدمات الرقمية المبتكرة الدفع السريع والشحن",
   viewport: {
-    width: 'device-width',
+    width: "device-width",
     initialScale: 1,
     maximumScale: 1,
-  }
+  },
 }
 
 export default function RootLayout({
@@ -19,7 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl">
-    <body>{children}</body>
-  </html>
+      <body>
+        <FirestoreRouter>{children}</FirestoreRouter>
+      </body>
+    </html>
   )
 }
